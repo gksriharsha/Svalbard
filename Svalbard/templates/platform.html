@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1 class="mb-3">{{ platform }}</h1>
+    {% for result in results.items %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{ url_for('process', process=result.process) }}">{{ result.process }}</a>
+              <small class="text-muted float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
+            </div>
+            <div class='row mr-2'>
+                <div class='column ml-3'>
+                  <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
+                  <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                  <p class='mt-2'>
+                    <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse" data-target="#collapseExample - {{result.id}}" aria-expanded="false" aria-controls="collapseExample">
+                      
+                    </button>
+                  </p>
+                </div>
+                <div class='column mx-5'>
+                  <div>Dataset : {{ result.dataset.dataset_name}}</div>
+                </div>
+              
+              </div>
+              <div class="collapse" id="collapseExample - {{result.id}}">
+                <div class="card card-body">
+                  <div>
+                    <div class='row mr-2'>
+                      <div class='column ml-3'>
+                        <div>Precision</div>
+                        <div class='mt-2'>Recall</div>
+                        <div class='mt-2'>Time</div>
+                      </div>   
+                      <div class='column ml-3'>
+                        <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
+                        <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
+                        <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>
+                      </div>   
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </article>
+    {% endfor %}
+    {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if results.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}
