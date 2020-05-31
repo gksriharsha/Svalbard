@@ -20,7 +20,7 @@
                 </p>
               </div>
               <div class='column mx-5'>
-                <div>Dataset : {{ result.dataset.dataset_name}}</div>
+                <div>Dataset : <a href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a></div>
               </div>
             
             </div>
@@ -48,9 +48,9 @@
     {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
         {% if results.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-info mb-4" href="{{ url_for('process', page=page_num, process=process) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('process', page=page_num, process=process) }}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...
