@@ -1,28 +1,31 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="card mb-4">
-  <div class="card-header">
+  <div class="card-header center">
     Search
   </div>
   <div class="card-body">
     <form method="POST" action="">
       {{ form.hidden_tag() }}
-      {{ form.csrf_token }}
-      <fieldset class="form-group">
+      <fieldset class="form-group border-bottom">
           <div class="form-group">
-              {{ form.Process.label(class="mx-3 form-control-label") }}
+              {{form.ProcessCheck(onclick="doprocessCheck()")}}
+              {{ form.Process.label(id="process-label",class="mx-3 form-control-label") }}
               {{form.Process}}
           </div>
           <div class="form-group">
-            {{ form.Task.label(class="mx-3 form-control-label") }}
-            {{form.Task}}
+            {{form.TaskCheck(onclick="dotaskCheck()",onload="doprocessCheck()")}}
+            {{ form.Task.label(id="task-label",class="mx-3 form-control-label") }}
+            {{form.Task(id="task-select",onchange="dorefreshParams()")}}
           </div>
           <div class="form-group">
-            {{ form.Platform.label(class="mx-3 form-control-label") }}
+            {{form.PlatformCheck(onclick="doplatformCheck()")}}
+            {{ form.Platform.label(id="platform-label",class="mx-3 form-control-label") }}
             {{form.Platform}}
           </div>
           <div class="form-group">
-            {{ form.Dataset.label(class="mx-3 form-control-label") }}
+            {{form.DatasetCheck(onclick="dodatasetCheck()")}}
+            {{ form.Dataset.label(id="dataset-label",class="mx-3 form-control-label") }}
             {{form.Dataset}}
           </div>
       </fieldset>
@@ -30,72 +33,146 @@
           {{ form.submit(class="btn btn-outline-primary") }}
       </div>
   </form>
-  </div>
 </div>
+</div>
+
 <div>
-  {% block results %}
-  {% endblock %}
-  {% if results %}
-    {% for result in results.items %}
-          <article class="media content-section">
-            <div class="media-body">
-              
-              <div class="article-metadata">
-                
+  <div>    
+    {% if results%}
+    <div class="card-header">
+      {{results.count()}} Results found!
+    </div>
+    <div style="height:450px;overflow-y:auto;">
+      {% for result in results %}
+        <article class="media content-section pagination">
+      
+        <div class="media-body">
+            <div class="article-metadata">
                 <a class="mr-2" href="{{ url_for('process', process=result.process) }}">{{ result.process }}</a>
                 <a class="mx-5" href="{{ url_for('ML_task', task=result.task) }}">{{ result.task }}</a>
                 <a class="mx-5" href="{{ url_for('ML_platform', platform=result.platform) }}">{{ result.platform}}</a>
-                <small  class="text-muted font-italic float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
-              
-              </div>
-            
-              <div class='row mr-2'>
+                <small class="text-muted font-italic float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
+
+            </div>
+
+            <div class='row mr-2'>
                 <div class='column ml-3'>
-                  <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
-                  <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
-                  <p class='mt-2'>
-                    <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse" data-target="#collapseExample - {{result.id}}" aria-expanded="false" aria-controls="collapseExample">
-                      
-                    </button>
-                  </p>
+                    <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
+                    <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                    <p class='mt-2'>
+                        <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseExample - {{result.id}}" aria-expanded="false"
+                            aria-controls="collapseExample">
+
+                        </button>
+                    </p>
                 </div>
                 <div class='column mx-5'>
-                  <div>Dataset : <a href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a></div>
-                </div>      
-              </div>   
-              <div class="collapse" id="collapseExample - {{result.id}}">
-                <div class="card card-body">
-                  <div>
-                    <div class='row mr-2'>
-                      <div class='column ml-3'>
-                        <div>Precision</div>
-                        <div class='mt-2'>Recall</div> 
-                        <div class='mt-2'>Time</div>                     
-                      </div>   
-                      <div class='column ml-3'>
-                        <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
-                        <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
-                        <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>                      
-                      </div>   
+                    <div>Dataset : <a
+                            href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </article>
-          {% endfor %}
-          {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-        {% if page_num %}
-          {% if results.page == page_num %}
-            <a class="btn btn-info mb-4" href="{{ url_for('search', page=page_num) }}">{{ page_num }}</a>
-          {% else %}
-            <a class="btn btn-outline-info mb-4" href="{{ url_for('search', page=page_num) }}">{{ page_num }}</a>
-          {% endif %}
-        {% else %}
-          ...
-        {% endif %}
-      {% endfor %}
+            <div class="collapse" id="collapseExample - {{result.id}}">
+                <div class="card card-body">
+                    <div>
+                        <div class='row mr-2'>
+                            <div class='column ml-3'>
+                                <div>Precision</div>
+                                <div class='mt-2'>Recall</div>
+                                <div class='mt-2'>Time</div>
+                            </div>
+                            <div class='column ml-3'>
+                                <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
+                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
+                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+  </div>
     {% endif %}
   </div>
+</div>
+<script>
+document.onload = allcheck();
+
+function allcheck(){
+  dodatasetCheck()
+  doplatformCheck()
+  doprocessCheck()
+  dotaskCheck()
+}
+function dorefreshParams()
+{
+  x = document.getElementById("task-select").value
+  document.getElementById("demo").innerHTML = x;
+}
+function doprocessCheck(){
+    var x = document.getElementById("isProcessChecked").checked;
+    if(x){
+        document.getElementById('process-select').disabled = false;
+        document.getElementById('process-label').className="mx-3 form-control-label";
+    }
+    else{
+        document.getElementById('process-select').disabled = true;
+        document.getElementById('process-label').className="mx-3 form-control-label text-muted";
+    }
+}
+function dotaskCheck(){
+    var x = document.getElementById("isTaskChecked").checked;
+    if(x){
+        document.getElementById('task-select').disabled = false;
+        document.getElementById('task-label').className="mx-3 form-control-label";
+    }
+    else{
+        document.getElementById('task-select').disabled = true;
+        document.getElementById('task-label').className="mx-3 form-control-label text-muted";
+    }
+}
+function dodatasetCheck(){
+    var x = document.getElementById("isDatasetChecked").checked;
+    if(x){
+        document.getElementById('dataset-select').disabled = false;
+        document.getElementById('dataset-label').className="mx-3 form-control-label";
+    }
+    else{
+        document.getElementById('dataset-select').disabled = true;
+        document.getElementById('dataset-label').className="mx-3 form-control-label text-muted";
+    }
+}
+function doplatformCheck(){
+    var x = document.getElementById("isPlatformChecked").checked;
+    if(x){
+        document.getElementById('platform-select').disabled = false;
+        document.getElementById('platform-label').className="mx-3 form-control-label";
+    }
+    else{
+        document.getElementById('platform-select').disabled = true;
+        document.getElementById('platform-label').className="mx-3 form-control-label text-muted";
+    }
+}
+
+</script>
 {% endblock content %}
+
+{% block sidebar %}
+  <div class="col-md-4">
+    <div class="content-section">
+      <h3>Filters</h3>
+      <p class='text-muted'>Hyper parameters for further filtering
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-light">Latest Posts</li>
+          <li class="list-group-item list-group-item-light">Announcements</li>
+          <li class="list-group-item list-group-item-light">Calendars</li>
+          <li class="list-group-item list-group-item-light">etc</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+  {% endblock sidebar%}
 

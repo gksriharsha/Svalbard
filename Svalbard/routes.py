@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from Svalbard import app, db
-from Svalbard.forms import RegistrationForm, LoginForm, SearchForm
+from Svalbard.forms import RegistrationForm, LoginForm, SearchForm, SubSearchForm
 from Svalbard.models import Result, Dataset
 
 
@@ -20,13 +20,17 @@ def search():
     search.Task.choices = [(r.task,str(r.task)) for r in db.session.query(Result.task).distinct()]
     search.Platform.choices = [(r.platform,str(r.platform)) for r in db.session.query(Result.platform).distinct()]
     search.Dataset.choices = [(r.dataset_id,str(Dataset.query.filter_by(id=r.dataset_id).first().dataset_name)) for r in db.session.query(Result.dataset_id).distinct()]
-    print(search.errors)
-    if search.is_submitted() or page > 1:        
-        results = Result.query.filter_by(task=search.Task.data).filter_by(process=search.Process.data)\
-            .filter_by(platform=search.Platform.data).filter_by(dataset_id=search.Dataset.data)\
-                .paginate(page=page,per_page=3)
-        print(results)
-        return render_template('search.html', title='Search Space', results=results, form=search)
+    if search.is_submitted():
+        results = Result.query
+        if search.TaskCheck.data:
+            results = results.filter_by(task=search.Task.data)
+        if search.ProcessCheck.data:
+            results = results.filter_by(process=search.Process.data)
+        if search.PlatformCheck.data:
+            results = results.filter_by(platform=search.Platform.data)
+        if search.DatasetCheck.data:
+            results = results.filter_by(dataset_id=search.Dataset.data)
+        return render_template('search.html', title='Results', results=results, form=search)
     return render_template('search.html', title='Search Space', form=search)
 
 @app.route("/register", methods=['GET', 'POST'])
