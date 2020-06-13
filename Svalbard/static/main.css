@@ -112,3 +112,8 @@ button.btn.newRule:before
 .btn-primary.focus {
   box-shadow: 0 0 0 .2rem rgba(91, 194, 194, 0.5)
 }
+
+select {
+  font-size: .9rem;
+  padding: 2px 5px;
+}

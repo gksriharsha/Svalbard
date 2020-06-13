@@ -1,0 +1,68 @@
+<meta id="results" data-playlist="{{ results }}">
+<div>
+  <div>    
+    {% if results%}
+    <div class="card-header" style="background-color:greenyellow ;">
+      {% if flag == True %}
+      {{results.count()}} + Results found!
+      {%else %}
+      {{results.count()}} Results found!
+      {%endif%}
+    </div>    
+    <div style="height:450px;overflow-y:auto;">
+      {% for result in results %}
+        <article class="media content-section pagination">
+      
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('process', process=result.process) }}">{{ result.process }}</a>
+                <a class="mx-5" href="{{ url_for('ML_task', task=result.task) }}">{{ result.task }}</a>
+                <a class="mx-5" href="{{ url_for('ML_platform', platform=result.platform) }}">{{ result.platform}}</a>
+                <small class="text-muted font-italic float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
+
+            </div>
+
+            <div class='row mr-2'>
+                <div class='column ml-3'>
+                    <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
+                    <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                    <p class='mt-2'>
+                        <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseExample - {{result.id}}" aria-expanded="false"
+                            aria-controls="collapseExample">
+
+                        </button>
+                    </p>
+                </div>
+                <div class='column mx-5'>
+                    <div>Dataset : <a
+                            href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample - {{result.id}}">
+                <div class="card card-body">
+                    <div>
+                        <div class='row mr-2'>
+                            <div class='column ml-3'>
+                                <div>Precision</div>
+                                <div class='mt-2'>Recall</div>
+                                <div class='mt-2'>Time</div>
+                            </div>
+                            <div class='column ml-3'>
+                                <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
+                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
+                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+  </div>
+    {% endif %}
+  </div>
+</div>
+</meta>

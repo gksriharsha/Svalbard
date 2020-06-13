@@ -24,22 +24,24 @@ class LoginForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    Process = SelectField('Process',id='process-select')
-    ProcessCheck = BooleanField('Process',default="checked",id='isProcessChecked')
-    Task = SelectField('Task',id='task-select')
-    TaskCheck = BooleanField('Task',default="checked",id='isTaskChecked')
-    Dataset = SelectField('Dataset',id='dataset-select')
-    DatasetCheck = BooleanField('Dataset',default="checked",id='isDatasetChecked')
-    Platform = SelectField('Platform',id='platform-select')
-    PlatformCheck = BooleanField('Platform',default="checked",id='isPlatformChecked')
+    Process = SelectField('Process', id='process-select')
+    ProcessCheck = BooleanField(
+        'Process', default="checked", id='isProcessChecked')
+    Task = SelectField('Task', id='task-select')
+    TaskCheck = BooleanField('Task', default="checked", id='isTaskChecked')
+    Dataset = SelectField('Dataset', id='dataset-select')
+    DatasetCheck = BooleanField(
+        'Dataset', default="checked", id='isDatasetChecked')
+    Platform = SelectField('Platform', id='platform-select')
+    PlatformCheck = BooleanField(
+        'Platform', default="checked", id='isPlatformChecked')
     submit = SubmitField('Search')
 
+
 class SubSearchForm(FlaskForm):
-    def __init__(self,params):
-        for param in params:
-            setattr(self,param,SelectField(param,id=param+'-select'))
-            setattr(self,param,BooleanField(param,id='is'+param+'Checked'))
+    submit = SubmitField('Search')
+
 
 if __name__ == '__main__':
-    clf = SubSearchForm(['K','weights','algorithm'])
+    clf = SubSearchForm(['K', 'weights', 'algorithm'])
     print(clf)

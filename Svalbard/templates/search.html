@@ -30,75 +30,86 @@
           </div>
       </fieldset>
       <div class="form-group">
-          {{ form.submit(class="btn btn-outline-primary") }}
+          {{ form.submit(id="Main-form",class="btn btn-outline-primary") }}
       </div>
   </form>
 </div>
 </div>
+<!-- {%if res_zip%}
+<p>{{res_zip}}</p>
+<p>{% set test=10 %}</p>
+{%endif%} -->
+<div id="results-replacement">
+  <meta id="results" data-playlist="{{ results }}">
+  <div>
+    <div>    
+      {% if results%}
+      <div class="card-header" style="background-color:greenyellow ;">
+        {% if flag == True %}
+        {{results.count()}} + Results found!
+        {%else %}
+        {{results.count()}} Results found!
+        {%endif%}
+      </div>    
+      <div style="height:450px;overflow-y:auto;">
+        {% for result in results %}
+          <article class="media content-section pagination">
+        
+          <div class="media-body">
+              <div class="article-metadata">
+                  <a class="mr-2" href="{{ url_for('process', process=result.process) }}">{{ result.process }}</a>
+                  <a class="mx-5" href="{{ url_for('ML_task', task=result.task) }}">{{ result.task }}</a>
+                  <a class="mx-5" href="{{ url_for('ML_platform', platform=result.platform) }}">{{ result.platform}}</a>
+                  <small class="text-muted font-italic float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
 
-<div>
-  <div>    
-    {% if results%}
-    <div class="card-header">
-      {{results.count()}} Results found!
+              </div>
+
+              <div class='row mr-2'>
+                  <div class='column ml-3'>
+                      <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
+                      <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                      <p class='mt-2'>
+                          <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse"
+                              data-target="#collapseExample - {{result.id}}" aria-expanded="false"
+                              aria-controls="collapseExample">
+
+                          </button>
+                      </p>
+                  </div>
+                  <div class='column mx-5'>
+                      <div>Dataset : <a
+                              href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a>
+                      </div>
+                  </div>
+              </div>
+              <div class="collapse" id="collapseExample - {{result.id}}">
+                  <div class="card card-body">
+                      <div>
+                          <div class='row mr-2'>
+                              <div class='column ml-3'>
+                                  <div>Precision</div>
+                                  <div class='mt-2'>Recall</div>
+                                  <div class='mt-2'>Time</div>
+                              </div>
+                              <div class='column ml-3'>
+                                  <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
+                                  <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
+                                  <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </article>
+      {% endfor %}
     </div>
-    <div style="height:450px;overflow-y:auto;">
-      {% for result in results %}
-        <article class="media content-section pagination">
-      
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="{{ url_for('process', process=result.process) }}">{{ result.process }}</a>
-                <a class="mx-5" href="{{ url_for('ML_task', task=result.task) }}">{{ result.task }}</a>
-                <a class="mx-5" href="{{ url_for('ML_platform', platform=result.platform) }}">{{ result.platform}}</a>
-                <small class="text-muted font-italic float-right">{{ result.date_posted.strftime('%d-%m-%Y') }}</small>
-
-            </div>
-
-            <div class='row mr-2'>
-                <div class='column ml-3'>
-                    <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
-                    <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
-                    <p class='mt-2'>
-                        <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse"
-                            data-target="#collapseExample - {{result.id}}" aria-expanded="false"
-                            aria-controls="collapseExample">
-
-                        </button>
-                    </p>
-                </div>
-                <div class='column mx-5'>
-                    <div>Dataset : <a
-                            href="{{ url_for('ML_dataset', dataset=result.dataset.id) }}">{{ result.dataset.dataset_name}}</a>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse" id="collapseExample - {{result.id}}">
-                <div class="card card-body">
-                    <div>
-                        <div class='row mr-2'>
-                            <div class='column ml-3'>
-                                <div>Precision</div>
-                                <div class='mt-2'>Recall</div>
-                                <div class='mt-2'>Time</div>
-                            </div>
-                            <div class='column ml-3'>
-                                <div>= {{'%0.3f' | format(result.details.Precision *100)}} %</div>
-                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Recall *100)}} %</div>
-                                <div class='mt-2'>= {{'%0.3f' | format(result.details.Time)}} s</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-    {% endfor %}
+      {% endif %}
+    </div>
   </div>
-    {% endif %}
-  </div>
+  </meta>
 </div>
-<script>
+<script type="text/javascript">
 document.onload = allcheck();
 
 function allcheck(){
@@ -109,8 +120,8 @@ function allcheck(){
 }
 function dorefreshParams()
 {
-  x = document.getElementById("task-select").value
-  document.getElementById("demo").innerHTML = x;
+  var obj = document.getElementById("HP-list")
+  obj.remove()
 }
 function doprocessCheck(){
     var x = document.getElementById("isProcessChecked").checked;
@@ -156,23 +167,110 @@ function doplatformCheck(){
         document.getElementById('platform-label').className="mx-3 form-control-label text-muted";
     }
 }
+function dohpfilter(){
+  var x = document.getElementById("test");
+  
+  var count = 0;
+  var hp_list = {{hp_list|tojson}};
+  hp = hp_list[8]
+  // if(document.getElementById(String(hp).concat("checkbox")).checked){
+  //    count+=1;
+  // }
+  for(hp of hp_list){
+    if(!(hp.toLowerCase().includes("id"))){
+      if (document.getElementById(String(hp).concat("checkbox")) != null){
+        if(document.getElementById(String(hp).concat("checkbox")).checked){
+          count+=1;
+        }
+      }
+  }
+  }
+}
+
+$(document).ready(function(){
+
+  $("form#HP-list").on('submit',function(event){
+
+    event.preventDefault();
+
+    var data = 10;
+
+    var fieldPair = '';
+    $("form#HP-list :input").each(function(){
+      fieldPair += $(this).attr("name") + ':'
+      var name = String($(this).attr("name"));
+      if(name.includes('csrf'))
+      {
+        fieldPair+= ';';
+      }
+      else{
+        if(name.includes('select')){
+          fieldPair += $(this).find(':selected').text();
+          fieldPair+= ';';
+        }
+        else{
+          fieldPair += $(this).is(":checked");
+          fieldPair+= ',';
+        } 
+      }    
+    });
+    
+    req = $.ajax({
+
+      url: '/bg_process',
+      type: 'POST',
+      data:{
+        test:data,
+        clf:$("#task-select").find(":selected").text(),
+        form_data:fieldPair,
+      },
+      success:function(response){
+        $('#results-replacement').empty()
+        $('#results-replacement').append(response.data)
+      }
+    });
+
+  })
+
+
+})
 
 </script>
+
+
 {% endblock content %}
 
 {% block sidebar %}
+
   <div class="col-md-4">
     <div class="content-section">
       <h3>Filters</h3>
-      <p class='text-muted'>Hyper parameters for further filtering
-        <ul class="list-group">
-          <li class="list-group-item list-group-item-light">Latest Posts</li>
-          <li class="list-group-item list-group-item-light">Announcements</li>
-          <li class="list-group-item list-group-item-light">Calendars</li>
-          <li class="list-group-item list-group-item-light">etc</li>
+      <p class='text-muted'>Hyper parameters for further filtering</p>
+      {%if results%}
+      <form method="POST" id="HP-list">
+        {{ form.hidden_tag() }}
+        <ul class="list-group" >
+          {% for (clf,hp,lst) in cols %}               
+          {% if request.form.get('Task') in clf and 'id'not in hp.lower()%}
+            <li class="list-group-item list-group-item-light">
+               <input type="checkbox" id={{hp}}checkbox name={{hp}} value="True" class="mx-2" onclick="dohpfilter()"><label for={{hp}} class="mx-2"><div class="mx-2">{{hp}}</div></label>
+
+              <select class="select mx-3" name={{hp}}select id={{hp}} onchange="dohpfilter()">
+                {% for val in lst%}
+                <option value=val>{{val}}</option>
+                {%endfor%}
+              </select>
+            </li>
+          {%endif%}
+          {%endfor%}
+          <input type="submit" class="btn btn-primary mb-2 mr-2 mt-2" id="Submit button">
         </ul>
-      </p>
+        
+      </form>    
+      {%endif%}   
     </div>
   </div>
+
+
   {% endblock sidebar%}
 

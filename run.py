@@ -59,4 +59,4 @@ if __name__ == '__main__':
     # structure.update({'tablename':'KNN_py'})
     # structure.update({'resultid':1})
     # print(InjectData.inject('KNN_py',))
-    app.run(debug=True)
+    app.run(debug=True,threaded=False)
