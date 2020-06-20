@@ -20,8 +20,8 @@ if __name__ == '__main__':
     #     InjectData.inject(Data)
 
     # for row in DR2:
-    #     row.update({'tablename':'metadata'})
-    #     row =dict(zip(row.keys(),map(SQLfns.str2sqltype,row.values())))
+    #     row.update({'tablename': 'metadata'})
+    #     row =dict(zip(row.keys(), map(SQLfns.str2sqltype, row.values())))
     #     row.update({'Dataset_id':SQLfns.getdatasetid(row['fID'])})
     #     del row['fID']
     #     InjectData.inject(row)
@@ -54,9 +54,5 @@ if __name__ == '__main__':
     #         data2.update({'tablename':clf+'_py'})
     #         data2.update({'resultid':resultid})
     #         InjectData.inject(data2)
-            
-    # structure = next(DR4)
-    # structure.update({'tablename':'KNN_py'})
-    # structure.update({'resultid':1})
-    # print(InjectData.inject('KNN_py',))
+
     app.run(debug=True,threaded=False)

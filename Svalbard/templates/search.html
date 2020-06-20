@@ -67,10 +67,10 @@
               <div class='row mr-2'>
                   <div class='column ml-3'>
                       <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
-                      <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                      <div class='mt-2'>F1 Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
                       <p class='mt-2'>
                           <button class="btn newRule btn-primary collapsed" type="button" data-toggle="collapse"
-                              data-target="#collapseExample - {{result.id}}" aria-expanded="false"
+                              data-target="#collapse - {{result.id}}" aria-expanded="false"
                               aria-controls="collapseExample">
 
                           </button>
@@ -82,7 +82,7 @@
                       </div>
                   </div>
               </div>
-              <div class="collapse" id="collapseExample - {{result.id}}">
+              <div class="collapse" id="collapse - {{result.id}}">
                   <div class="card card-body">
                       <div>
                           <div class='row mr-2'>
@@ -167,25 +167,6 @@ function doplatformCheck(){
         document.getElementById('platform-label').className="mx-3 form-control-label text-muted";
     }
 }
-function dohpfilter(){
-  var x = document.getElementById("test");
-  
-  var count = 0;
-  var hp_list = {{hp_list|tojson}};
-  hp = hp_list[8]
-  // if(document.getElementById(String(hp).concat("checkbox")).checked){
-  //    count+=1;
-  // }
-  for(hp of hp_list){
-    if(!(hp.toLowerCase().includes("id"))){
-      if (document.getElementById(String(hp).concat("checkbox")) != null){
-        if(document.getElementById(String(hp).concat("checkbox")).checked){
-          count+=1;
-        }
-      }
-  }
-  }
-}
 
 $(document).ready(function(){
 
@@ -253,9 +234,9 @@ $(document).ready(function(){
           {% for (clf,hp,lst) in cols %}               
           {% if request.form.get('Task') in clf and 'id'not in hp.lower()%}
             <li class="list-group-item list-group-item-light">
-               <input type="checkbox" id={{hp}}checkbox name={{hp}} value="True" class="mx-2" onclick="dohpfilter()"><label for={{hp}} class="mx-2"><div class="mx-2">{{hp}}</div></label>
+               <input type="checkbox" id={{hp}}checkbox name={{hp}} value="True" class="mx-2" ><label for={{hp}} class="mx-2"><div class="mx-2">{{hp}}</div></label>
 
-              <select class="select mx-3" name={{hp}}select id={{hp}} onchange="dohpfilter()">
+              <select class="select mx-3" name={{hp}}select id={{hp}} >
                 {% for val in lst%}
                 <option value=val>{{val}}</option>
                 {%endfor%}

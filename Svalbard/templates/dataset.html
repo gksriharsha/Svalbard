@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1 class="mb-3">{{ dataset }}</h1>
+    <h1 class="mb-3">{{ dataset.dataset_name }}</h1>
     {% for result in results.items %}
         <article class="media content-section">
           <div class="media-body">
@@ -12,11 +12,9 @@
             <div class='row mr-2'>
               <div class='column ml-3'>
                 <div>Accuracy = {{'%0.3f' | format(result.details.Accuracy *100)}} %</div>
-                <div class='mt-2'>F1_Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
+                <div class='mt-2'>F1 Score = {{'%0.3f' | format(result.details.F1_Score *100)}} %</div>
                 <p class='mt-2'>
-                  <button class="btn btn-primary collapsed newRule" type="button" data-toggle="collapse" data-target="#collapseExample - {{result.id}}" aria-expanded="false" aria-controls="collapseExample">
-                    
-                  </button>
+                  <button class="btn btn-primary collapsed newRule" type="button" data-toggle="collapse" data-target="#collapseExample - {{result.id}}" aria-expanded="false" aria-controls="collapseExample"></button>
                 </p>
             </div>            
             </div>
@@ -53,3 +51,139 @@
       {% endif %}
     {% endfor %}
 {% endblock content %}
+
+{% block sidebar %}
+  <div class="col-md-4">
+    <div class="content-section">
+      <h3>Data Analytics</h3>
+      <p class='text-muted article-metadata mb-3'>Analytics for {{dataset.dataset_name}}</p>
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                Basic Statistics
+              </button>
+            </h5>
+          </div>
+      
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <table class="tg">
+                <thead>
+                  <tr>
+                    <th class="tg-0pky" style="font-weight:bold">Property</th>
+                    <th class="tg-0pky" style="font-weight:bold">Accuracy</th>
+                    <th class="tg-0pky" style="font-weight:bold">F1 Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tg-0pky">Mean</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Mean'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Mean'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">Median</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Median'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Median'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">1st Quantile</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Q1'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Q1'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">3rd Quantile</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Q3'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Q3'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">Std Dev</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Std'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Std'] *100)}}</td>
+                  </tr>
+                </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Task wise Statistics
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+              <table class="tg">
+                <thead>
+                  <tr>
+                    <th class="tg-0pky" style="font-weight:bold">Classifier</th>
+                    <th class="tg-0pky" style="font-weight:bold">Accuracy</th>
+                    <th class="tg-0pky" style="font-weight:bold">F1 Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for (k,v) in analytics.items()%}
+                  {%if not(k == 'Accuracy') and not(k == 'F1 Score') %}
+                    <tr>
+                      <td class="tg-0pky">{{k}}</td>
+                      <td class="tg-0pky">{{'%0.3f' | format(v['Accuracy'] *100)}}</td>
+                      <td class="tg-0pky">{{'%0.3f' | format(v['F1 Score'] *100)}}</td>
+                    </tr>  
+                    {%endif%}
+                  {%endfor%}              
+                </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Graphical View
+              </button>
+            </h5>
+          </div>
+          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div class="card-body">
+              <label class='mx-2'>Task wise results</label>
+              <button class="btn btn-primary" onclick="dodrawgraph()">Show Graph</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
+    .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+    </style>
+
+
+    <script>
+
+    function dodrawgraph(){
+      req = $.ajax({
+
+        url: '/datagraph',
+        type: 'GET',
+        data:{
+          'dataset': {{dataset.id|tojson }},
+        },
+        success:function(response){}
+        });
+
+    }
+    </script>
+  {% endblock sidebar%}
+
