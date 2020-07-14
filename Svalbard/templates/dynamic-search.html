@@ -1,0 +1,22 @@
+<fieldset class="form-group" id="search-fieldset">
+    <div class="form-group">
+        {{form.ProcessCheck(onclick="doprocessCheck()")}}
+        {{ form.Process.label(id="process-label",class="mx-3 form-control-label") }}
+        {{form.Process(id="process-select",onchange="dynamic_search_process()")}}
+    </div>
+    <div class="form-group">
+      {{form.TaskCheck(onclick="dotaskCheck()",onload="doprocessCheck()")}}
+      {{ form.Task.label(id="task-label",class="mx-3 form-control-label") }}
+      {{form.Task(id="task-select",onchange="dorefreshParams()")}}
+    </div>
+    <div class="form-group">
+      {{form.PlatformCheck(onclick="doplatformCheck()")}}
+      {{ form.Platform.label(id="platform-label",class="mx-3 form-control-label") }}
+      {{form.Platform(onchange="dynamic_search_platform()")}}
+    </div>
+    <div class="form-group">
+      {{form.DatasetCheck(onclick="dodatasetCheck()")}}
+      {{ form.Dataset.label(id="dataset-label",class="mx-3 form-control-label") }}
+      {{form.Dataset}}
+    </div>
+</fieldset>

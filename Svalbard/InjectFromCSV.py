@@ -183,3 +183,4 @@ def inject_data2(x):
         Entry3 = Metadata(**row)
         db.session.add(Entry3)
         db.session.commit()
+        

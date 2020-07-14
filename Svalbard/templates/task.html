@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1 class="mb-3">{{ task }}</h1>
+    <h1 class="mb-3">{{ task }} Classifier</h1>
+    <h5 class="mb-2 text-muted">{{count}} results found</h5>
+    <hr>
     {% for result in results.items %}
         <article class="media content-section">
           <div class="media-body">
@@ -55,3 +57,75 @@
       {% endif %}
     {% endfor %}
 {% endblock content %}
+
+{% block sidebar %}
+  <div class="col-md-4">
+    <div class="content-section">
+      <h3>Data Analytics</h3>
+      <p class='text-muted article-metadata mb-3'>Analytics for {{task}}</p>
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                Basic Statistics
+              </button>
+            </h5>
+          </div>
+      
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <table class="tg">
+                <thead>
+                  <tr>
+                    <th class="tg-0pky" style="font-weight:bold">Property</th>
+                    <th class="tg-0pky" style="font-weight:bold">Accuracy</th>
+                    <th class="tg-0pky" style="font-weight:bold">F1 Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tg-0pky">Mean</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Mean'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Mean'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">Median</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Median'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Median'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">1st Quantile</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Q1'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Q1'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">3rd Quantile</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Q3'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Q3'] *100)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">Std Dev</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['Accuracy']['Std'] *100)}}</td>
+                    <td class="tg-0pky">{{'%0.3f' | format(analytics['F1 Score']['Std'] *100)}}</td>
+                  </tr>
+                </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
+    .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+    </style>
+
+
+  {% endblock sidebar%}

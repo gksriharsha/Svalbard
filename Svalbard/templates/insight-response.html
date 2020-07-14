@@ -1,0 +1,23 @@
+<article class="media content-section">
+    <div class="">
+      <div class="media-body">
+
+        <div class="article-metadata">
+
+          <a class="mr-2 heading" href="#">{{item.metadata_parameter}}</a>
+        </div>
+
+        <div class='row mr-2'>
+          <div class='column ml-3'>
+            <div style="display: block;">
+              <div class="content text-muted" style="font-size: medium;">Accuracy</div>
+              <div class="content"> Correlation = {{'%0.3f' | format(item.value_acc)}} </div>
+              <div class="content text-muted" style="font-size: medium;">F1 Score</div>
+              <div class="content"> Correlation = {{'%0.3f' | format(item.value_f1)}} </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </article>

@@ -5,13 +5,13 @@
     Search
   </div>
   <div class="card-body">
-    <form method="POST" action="">
+    <form method="POST" action="" id="search-form">
       {{ form.hidden_tag() }}
-      <fieldset class="form-group border-bottom">
+      <fieldset class="form-group border-bottom" id="search-fieldset">
           <div class="form-group">
               {{form.ProcessCheck(onclick="doprocessCheck()")}}
               {{ form.Process.label(id="process-label",class="mx-3 form-control-label") }}
-              {{form.Process}}
+              {{form.Process(id="process-select",onchange="dynamic_search_process()")}}
           </div>
           <div class="form-group">
             {{form.TaskCheck(onclick="dotaskCheck()",onload="doprocessCheck()")}}
@@ -21,12 +21,12 @@
           <div class="form-group">
             {{form.PlatformCheck(onclick="doplatformCheck()")}}
             {{ form.Platform.label(id="platform-label",class="mx-3 form-control-label") }}
-            {{form.Platform}}
+            {{form.Platform(id="platform-select",onchange="dynamic_search_platform()")}}
           </div>
           <div class="form-group">
             {{form.DatasetCheck(onclick="dodatasetCheck()")}}
             {{ form.Dataset.label(id="dataset-label",class="mx-3 form-control-label") }}
-            {{form.Dataset}}
+            {{form.Dataset(id="dataset-select")}}
           </div>
       </fieldset>
       <div class="form-group">
@@ -211,10 +211,48 @@ $(document).ready(function(){
       }
     });
 
-  })
+  });
 
 
-})
+});
+
+function dynamic_search_process(){
+
+  var fieldPair = '';
+
+  $("form#search-form :input").each(function(){
+      fieldPair += $(this).attr("id") + ':'
+      var name = String($(this).attr("id"));
+      if(name.includes('csrf'))
+      {
+        fieldPair+= ';';
+      }
+      else{
+        if(name.includes('select')){
+          fieldPair += $(this).find(':selected').text();
+          fieldPair+= ';';
+        }
+        else{
+          fieldPair += $(this).is(":checked");
+          fieldPair+= ',';
+        } 
+      }    
+    });
+
+  req = $.ajax({
+
+    url: '/dropdown-list/process',
+    type: 'POST',
+    data:{
+      selected_process:$("select#process-select").find(":selected").text(),
+      selected_data:fieldPair,
+    },
+    success:function(response){
+      $('#search-fieldset').empty()
+      $('#search-fieldset').append(response.data)
+    }
+  });
+}
 
 </script>
 
@@ -232,7 +270,7 @@ $(document).ready(function(){
         {{ form.hidden_tag() }}
         <ul class="list-group" >
           {% for (clf,hp,lst) in cols %}               
-          {% if request.form.get('Task') in clf and 'id'not in hp.lower()%}
+          {% if request.form.get('Task') in clf and 'id'not in hp.lower() and 'additional' not in hp.lower()%}
             <li class="list-group-item list-group-item-light">
                <input type="checkbox" id={{hp}}checkbox name={{hp}} value="True" class="mx-2" ><label for={{hp}} class="mx-2"><div class="mx-2">{{hp}}</div></label>
 
@@ -245,6 +283,7 @@ $(document).ready(function(){
           {%endif%}
           {%endfor%}
           <input type="submit" class="btn btn-primary mb-2 mr-2 mt-2" id="Submit button">
+          
         </ul>
         
       </form>    

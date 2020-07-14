@@ -1,0 +1,55 @@
+body {
+  background: #fafafa;
+  color: #333333;
+}
+
+.btn:hover {
+  background-color: #3c9699;
+  color: #fff;
+}
+
+.option-text {
+  float: left;
+  margin: 25px 15px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+ul .option {
+  float: left;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+ul .option:hover {
+  background-color: #79e0ee;
+}
+
+ul .btn {
+  margin: 20px 15px;
+}
+
+.navigation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  left: 40%;
+  top: 20%;
+  border-style: hidden;
+}
+
+img {
+  float: left;
+  opacity: 0.5;
+  margin: 5px;
+}
+
+.dropdown-menu {
+  width: auto !important;
+  height: auto !important;
+  max-height: 200px;
+  overflow: auto;
+}

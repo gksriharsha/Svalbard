@@ -14,7 +14,7 @@
    
      
     <!-- Bootstrap CSS -->
-    
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon_io/favicon.ico') }}">
     
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
@@ -42,6 +42,7 @@
       </nav>
     </header>
     <main role="main" class="container">
+      <div>{% block fullpage%} {% endblock %}</div>
       <div class="row">
         <div class="col-md-8">
           {% with messages = get_flashed_messages(with_categories=true) %}
