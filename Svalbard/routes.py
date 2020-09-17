@@ -36,7 +36,6 @@ def index():
 
 @app.route("/analytics")
 def analytics():
-    page = request.args.get('page', 1, type=int)
     fixed_hp_resultids = [result.resultid for result in \
         db.session.query(db.metadata.tables['KNN_py'])\
             .filter_by(K=3)
@@ -68,6 +67,26 @@ def analytics():
         # cols = [(table, col, [val[0] for (val) in db.session.query(colobj).distinct().all()])for (table, tblobj) in list(
         #         db.metadata.tables.items()) if '_py' in table for (col, colobj) in tblobj.columns.items()]
     return render_template('insights.html',list=metric_list,selected_clf='KNN')
+
+@app.route("/analytics-sweep")
+def sweep():
+    fixed_hp_resultids = [(result.resultid,result.K) for result in \
+        db.session.query(db.metadata.tables['KNN_py'])\
+            .filter_by(weights='uniform')
+            .filter_by(algorithm='auto')]
+    global iterable_list
+    iterable_list = []
+    metric_list = []
+    Accuracies = {result.dataset_id:result.details.Accuracy for result in Result.query.filter(Result.id.in_([i[1] for i in fixed_hp_resultids ]))}
+    F1_Score = {result.dataset_id:result.details.F1_Score for result in Result.query.filter(Result.id.in_([i[1] for i in fixed_hp_resultids ]))}
+    Metadata_values=  [item.__dict__ for item in
+                     Metadata.query.filter(
+                         Metadata.Dataset_id.in_(
+                             [result.dataset_id for result in
+                              Result.query.filter(
+                                  Result.id.in_([i[1] for i in fixed_hp_resultids ]))]))]
+    
+    
 
 # @app.route("/analytics-hp", methods=['POST'])
 # def analytics_hp():
